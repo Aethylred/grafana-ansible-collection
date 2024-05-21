@@ -43,3 +43,8 @@ grafana_alloy_config: |
         url = "http://mimir:9009/api/v1/push"
     }
   }
+
+# Stolen from promtail to allow Alloy to read /var/log/messages
+grafana_alloy_runtime_mode: "acl"  # Supported "root" or "acl"
+grafana_alloy_user_append_groups:
+  - "systemd-journal"

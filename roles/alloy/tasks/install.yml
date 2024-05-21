@@ -18,6 +18,20 @@
     create_home: false  # Appropriate for a system user, usually doesn't need a home directory
   become: true
 
+# Mercilessly stealing from promtail to allow Alloy to read /var/log/messages etc.
+- name: Add the Alloy system user to additional group
+  ansible.builtin.user:
+    name: "{{ grafana_alloy_service_user }}"
+    groups: "{{ item }}"
+    system: true
+    append: true
+    create_home: false
+    state: present
+  loop: "{{ grafana_alloy_user_append_groups }}"
+  when:
+    - grafana_alloy_user_append_groups | length > 0
+    - grafana_alloy_runtime_mode == "acl"
+
 - name: Download alloy binary
   ansible.builtin.get_url:
     url: "{{ grafana_alloy_binary_url }}"
